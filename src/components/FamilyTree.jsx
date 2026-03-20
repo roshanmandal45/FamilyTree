@@ -60,7 +60,7 @@ const Card = ({ person, onClick, onDetails }) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
-    className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 border border-white/20"
+    className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow-xl flex flex-col  items-center  gap-2 border border-white/20 "
   >
     <img src={person.img} className="w-20 h-20 rounded-full border-2 border-blue-400" />
     <h3 className="text-white text-sm font-semibold text-center">{person.name}</h3>
