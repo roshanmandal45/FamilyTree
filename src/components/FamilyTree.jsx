@@ -1,170 +1,161 @@
-// 📁 FULL ADVANCED FAMILY TREE (React + Tailwind + Zoom + Relations)
-// Place this file at: src/components/FamilyTree.jsx
+// 🌟 FAMILY TREE HERO PAGE WITH SLIDING CHILDREN
+// Path: src/components/FamilyTree.jsx
 
 import { useState } from "react";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { motion, AnimatePresence } from "framer-motion";
 
-// 🧬 DATA STRUCTURE (you can expand this or fetch from backend)
-const people = {
-  1: {
-    id: 1,
-    name: "Grandfather",
-    img: "https://i.pravatar.cc/150?img=1",
-    parents: [],
-    spouse: 2,
-    children: [3, 4],
-    siblings: [],
-  },
-  2: {
-    id: 2,
-    name: "Grandmother",
-    img: "https://i.pravatar.cc/150?img=8",
-    parents: [],
-    spouse: 1,
-    children: [3, 4],
-    siblings: [],
-  },
-  3: {
-    id: 3,
-    name: "Father",
-    img: "https://i.pravatar.cc/150?img=2",
-    parents: [1, 2],
-    spouse: 5,
-    children: [6, 7],
-    siblings: [4],
-  },
-  4: {
-    id: 4,
-    name: "Uncle",
-    img: "https://i.pravatar.cc/150?img=5",
-    parents: [1, 2],
-    spouse: null,
-    children: [8],
-    siblings: [3],
-  },
-  5: {
-    id: 5,
-    name: "Mother",
-    img: "https://i.pravatar.cc/150?img=9",
-    parents: [],
-    spouse: 3,
-    children: [6, 7],
-    siblings: [],
-  },
-  6: {
-    id: 6,
-    name: "You",
-    img: "https://i.pravatar.cc/150?img=3",
-    parents: [3, 5],
-    spouse: null,
-    children: [],
-    siblings: [7],
-  },
-  7: {
-    id: 7,
-    name: "Sibling",
-    img: "https://i.pravatar.cc/150?img=4",
-    parents: [3, 5],
-    spouse: null,
-    children: [],
-    siblings: [6],
-  },
-  8: {
-    id: 8,
-    name: "Cousin",
-    img: "https://i.pravatar.cc/150?img=6",
-    parents: [4],
-    spouse: null,
-    children: [],
-    siblings: [],
-  },
+// 🧬 DATA STRUCTURE
+const data = {
+  parents: [
+    {
+      id: 1,
+      name: "Grandfather",
+      img: "https://i.pravatar.cc/150?img=1",
+      details: "Head of the family",
+      children: [
+        {
+          id: 4,
+          name: "Father",
+          img: "https://i.pravatar.cc/150?img=2",
+          details: "IT Professional",
+          spouse: { id: 5, name: "Mother", img: "https://i.pravatar.cc/150?img=8", details: "Teacher" },
+          children: [
+            {
+              id: 6,
+              name: "You",
+              img: "https://i.pravatar.cc/150?img=3",
+              details: "Student & Developer",
+              spouse: null,
+              children: [
+                { id: 9, name: "Child1", img: "https://i.pravatar.cc/150?img=10", details: "Baby" },
+                { id: 10, name: "Child2", img: "https://i.pravatar.cc/150?img=11", details: "Baby" },
+              ],
+            },
+            {
+              id: 7,
+              name: "Brother",
+              img: "https://i.pravatar.cc/150?img=4",
+              details: "Engineer",
+              spouse: { id: 8, name: "Wife", img: "https://i.pravatar.cc/150?img=12", details: "Housewife" },
+              children: [
+                { id: 11, name: "Child3", img: "https://i.pravatar.cc/150?img=13", details: "Baby" },
+                { id: 12, name: "Child4", img: "https://i.pravatar.cc/150?img=14", details: "Baby" },
+                { id: 13, name: "Child5", img: "https://i.pravatar.cc/150?img=15", details: "Baby" },
+              ],
+            },
+            {
+              id: 14,
+              name: "Sister",
+              img: "https://i.pravatar.cc/150?img=5",
+              details: "Doctor",
+              spouse: { id: 15, name: "Husband", img: "https://i.pravatar.cc/150?img=16", details: "Lawyer" },
+              children: [
+                { id: 16, name: "Child6", img: "https://i.pravatar.cc/150?img=17", details: "Baby" },
+                { id: 17, name: "Child7", img: "https://i.pravatar.cc/150?img=18", details: "Baby" },
+                { id: 18, name: "Child8", img: "https://i.pravatar.cc/150?img=19", details: "Baby" },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: "Grandmother",
+      img: "https://i.pravatar.cc/150?img=20",
+      details: "Matriarch",
+      children: [
+        {
+          id: 4,
+          name: "Father",
+          img: "https://i.pravatar.cc/150?img=2",
+          details: "IT Professional",
+          spouse: { id: 5, name: "Mother", img: "https://i.pravatar.cc/150?img=8", details: "Teacher" },
+          children: [ /* same as above */ ],
+        },
+      ],
+    },
+  ],
 };
 
-// 👤 PERSON CARD
-const Person = ({ person, onClick }) => (
-  <div
-    onClick={() => onClick(person.id)}
-    className="flex flex-col items-center cursor-pointer hover:scale-105 transition"
+// 👤 CARD COMPONENT
+const Card = ({ person, onClick, onDetails }) => (
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 border border-white/20"
   >
     <img
       src={person.img}
-      className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-blue-400"
+      className="w-20 h-20 rounded-full border-2 border-blue-400"
     />
-    <p className="text-xs md:text-sm mt-1">{person.name}</p>
-  </div>
-);
-
-// 🔗 LINE COMPONENT
-const Line = () => (
-  <div className="w-0.5 h-6 bg-white mx-auto"></div>
+    <h3 className="text-white text-sm font-semibold text-center">{person.name}</h3>
+    <div className="flex gap-2 mt-2">
+      <button
+        onClick={() => onClick(person)}
+        className="text-xs px-2 py-1 bg-blue-500 rounded-lg"
+      >Explore</button>
+      <button
+        onClick={() => onDetails(person)}
+        className="text-xs px-2 py-1 bg-gray-700 rounded-lg"
+      >View Details</button>
+    </div>
+  </motion.div>
 );
 
 export default function FamilyTree() {
-  const [selected, setSelected] = useState(6);
+  const [current, setCurrent] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [detail, setDetail] = useState(null);
 
-  const person = people[selected];
+  const handleExplore = (person) => {
+    if (person.children && person.children.length > 0) {
+      setHistory([...history, current]);
+      setCurrent(person);
+    }
+  };
+
+  const goBack = () => {
+    const prev = history[history.length - 1] || null;
+    setHistory(history.slice(0, -1));
+    setCurrent(prev);
+  };
 
   return (
-    <div className="w-full h-screen bg-gray-900 text-white">
-      {/* 🔍 ZOOM + PAN */}
-      <TransformWrapper>
-        <TransformComponent>
-          <div className="flex flex-col items-center p-6 min-w-[600px]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col items-center p-6">
+      <h1 className="text-3xl font-bold text-white mb-6 tracking-wide">Family Tree</h1>
 
-            {/* 👴 PARENTS */}
-            <div className="flex gap-6">
-              {person.parents.map((id) => (
-                <Person key={id} person={people[id]} onClick={setSelected} />
-              ))}
-            </div>
+      {current && history.length > 0 && (
+        <button onClick={goBack} className="mb-4 px-4 py-2 bg-white/10 text-white rounded-xl backdrop-blur">
+          ⬅ Back
+        </button>
+      )}
 
-            {person.parents.length > 0 && <Line />}
-
-            {/* 👤 CURRENT + SPOUSE */}
-            <div className="flex items-center gap-6">
-              <Person person={person} onClick={setSelected} />
-              {person.spouse && (
-                <Person
-                  person={people[person.spouse]}
-                  onClick={setSelected}
-                />
-              )}
-            </div>
-
-            <Line />
-
-            {/* 👶 CHILDREN */}
-            <div className="flex gap-6 mt-2">
-              {person.children.map((id) => (
-                <Person key={id} person={people[id]} onClick={setSelected} />
-              ))}
-            </div>
-
-            {/* 👥 SIBLINGS */}
-            {person.siblings.length > 0 && (
-              <>
-                <h3 className="mt-6 text-sm text-gray-400">Siblings</h3>
-                <div className="flex gap-4">
-                  {person.siblings.map((id) => (
-                    <Person
-                      key={id}
-                      person={people[id]}
-                      onClick={setSelected}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        </TransformComponent>
-      </TransformWrapper>
-
-      {/* 📄 DETAIL PANEL */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 border-t border-gray-700">
-        <h2 className="text-lg font-bold">{person.name}</h2>
-        <p className="text-sm text-gray-400">Click any member to explore</p>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl">
+        <AnimatePresence>
+          {(current ? current.children : data.parents).map((person) => (
+            <motion.div
+              key={person.id}
+              initial={{ x: 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+            >
+              <Card person={person} onClick={handleExplore} onDetails={setDetail} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {detail && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center">
+          <div className="bg-gray-900 p-6 rounded-2xl text-white max-w-sm w-full">
+            <img src={detail.img} className="w-24 h-24 rounded-full mx-auto" />
+            <h2 className="text-xl text-center mt-3">{detail.name}</h2>
+            <p className="text-sm text-gray-400 mt-2 text-center">{detail.details}</p>
+            <button onClick={() => setDetail(null)} className="mt-4 w-full py-2 bg-blue-500 rounded-lg">Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
