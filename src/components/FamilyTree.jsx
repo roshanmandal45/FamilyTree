@@ -1,4 +1,4 @@
-// 🌟 परिवार वृक्ष हिरो पेज - मण्डल परिवार
+// 🌟 मण्डल परिवार सदस्यहरू
 // Path: src/components/FamilyTree.jsx
 
 import { useState } from "react";
@@ -70,6 +70,23 @@ const Card = ({ person, onClick, onDetails }) => (
   </motion.div>
 );
 
+// 👴 GRANDPARENT कार्ड (बढाइएको)
+const GrandparentCard = ({ person, onClick, onDetails }) => (
+  <motion.div
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.98 }}
+    className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 backdrop-blur-lg p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4 border-2 border-amber-400/50 w-full max-w-md mx-auto"
+  >
+    <img src={person.img} className="w-32 h-32 rounded-full border-4 border-amber-400 shadow-xl" alt={person.name} />
+    <h3 className="text-white text-2xl font-bold text-center">{person.name}</h3>
+    <p className="text-amber-300 text-sm">{person.details}</p>
+    <div className="flex gap-3 mt-3">
+      <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">हेर्नुहोस्</button>
+      <button onClick={() => onDetails(person)} className="px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition">विवरण</button>
+    </div>
+  </motion.div>
+);
+
 export default function FamilyTree() {
   const [current, setCurrent] = useState(null);
   const [history, setHistory] = useState([]);
@@ -88,29 +105,46 @@ export default function FamilyTree() {
     setCurrent(prev);
   };
 
+  const isGrandparentView = !current && history.length === 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col items-center p-6">
-      <h1 className="text-3xl font-bold text-white mb-4 tracking-wide">मण्डल परिवार वृक्ष</h1>
-      <p className="text-gray-400 mb-6 text-center max-w-xl">
-        मण्डल परिवारको इतिहास, सम्बन्ध र पुस्ताहरूको सुन्दर यात्रा। यहाँ तपाईंले हाम्रो परिवारका प्रत्येक सदस्यको 
-        बारेमा जान्न सक्नुहुन्छ। परिवारका सदस्यहरूमा क्लिक गर्नुहोस् र हाम्रो परम्पराको गहिराइमा डुब्नुहोस्।
+      <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-blue-400 bg-clip-text text-transparent mb-3 tracking-wide">
+        मण्डल परिवार सदस्यहरू
+      </h1>
+      <p className="text-gray-300 mb-8 text-center max-w-2xl">
+        <span className="text-amber-400">✦</span> हाम्रो परिवारको गौरवमय इतिहास <span className="text-blue-400">✦</span>
       </p>
 
       {current && history.length > 0 && (
-        <button onClick={goBack} className="mb-4 px-4 py-2 bg-white/10 text-white rounded-xl backdrop-blur">
+        <button onClick={goBack} className="mb-6 px-5 py-2 bg-white/10 text-white rounded-xl backdrop-blur hover:bg-white/20 transition">
           ⬅ फर्कनुहोस्
         </button>
       )}
 
       {/* परिवार प्रदर्शन */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl">
-        <AnimatePresence>
-          {(current ? current.children.concat(current.spouse ? [current.spouse] : []) : data.grandparents).map((person) => (
-            <motion.div key={person.id} initial={{ x: 300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }}>
-              <Card person={person} onClick={handleExplore} onDetails={setDetail} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
+      <div className="w-full max-w-6xl">
+        {isGrandparentView ? (
+          // Grandparent in center with larger size
+          <div className="flex justify-center items-center">
+            <GrandparentCard 
+              person={data.grandparents[0]} 
+              onClick={handleExplore} 
+              onDetails={setDetail} 
+            />
+          </div>
+        ) : (
+          // Children grid view
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full">
+            <AnimatePresence>
+              {(current ? current.children.concat(current.spouse ? [current.spouse] : []) : data.grandparents).map((person) => (
+                <motion.div key={person.id} initial={{ x: 300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }}>
+                  <Card person={person} onClick={handleExplore} onDetails={setDetail} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
       {/* विवरण मोडल */}
@@ -135,7 +169,7 @@ export default function FamilyTree() {
         </div>
         <div className="text-center md:text-center mt-4 md:mt-0">
           <p className="text-sm text-gray-300">ठेगाना:</p>
-          <p className="text-sm font-medium">इनरुवा - १०, सुनसरी, नेपाल</p>
+          <p className="text-sm font-medium text-amber-300">इनरुवा - १०, सुनसरी, नेपाल</p>
         </div>
         <div className="flex gap-4 mt-4 md:mt-0">
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400">लिङ्क्डइन</a>
