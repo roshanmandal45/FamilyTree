@@ -68,11 +68,13 @@ const Card = ({ person, onClick, onDetails }) => (
     <h3 className="text-white text-sm font-semibold text-center">{person.name}</h3>
     <div className="flex gap-2 mt-2">
       {familyButtonIds.includes(person.id) ? (
-        <button onClick={() => onClick(person)} className="text-xs px-2 py-1 bg-blue-500 rounded-lg">परिवार</button>
+        <>
+          <button onClick={() => onClick(person)} className="text-xs px-2 py-1 bg-blue-500 rounded-lg">परिवार</button>
+          <button onClick={() => onDetails(person)} className="text-xs px-2 py-1 bg-gray-700 rounded-lg">विवरण</button>
+        </>
       ) : (
-        <button onClick={() => onClick(person)} className="text-xs px-2 py-1 bg-blue-500 rounded-lg">हेर्नुहोस्</button>
+        <button onClick={() => onDetails(person)} className="text-xs px-2 py-1 bg-gray-700 rounded-lg">विवरण</button>
       )}
-      <button onClick={() => onDetails(person)} className="text-xs px-2 py-1 bg-gray-700 rounded-lg">विवरण</button>
     </div>
   </motion.div>
 );
@@ -89,11 +91,13 @@ const GrandparentCard = ({ person, onClick, onDetails }) => (
     <p className="text-amber-300 text-sm">{person.details}</p>
     <div className="flex gap-3 mt-3">
       {familyButtonIds.includes(person.id) ? (
-        <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">परिवार</button>
+        <>
+          <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">परिवार</button>
+          <button onClick={() => onDetails(person)} className="px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition">विवरण</button>
+        </>
       ) : (
-        <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">हेर्नुहोस्</button>
+        <button onClick={() => onDetails(person)} className="px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition">विवरण</button>
       )}
-      <button onClick={() => onDetails(person)} className="px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition">विवरण</button>
     </div>
   </motion.div>
 );
