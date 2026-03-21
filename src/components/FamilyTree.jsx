@@ -54,6 +54,9 @@ const data = {
   ],
 };
 
+// IDs that should have the family button
+const familyButtonIds = [1, 3, 5, 12];
+
 // 👤 कार्ड कम्पोनेन्ट
 const Card = ({ person, onClick, onDetails }) => (
   <motion.div
@@ -64,7 +67,11 @@ const Card = ({ person, onClick, onDetails }) => (
     <img src={person.img} className="w-20 h-20 rounded-full border-2 border-blue-400" alt={person.name} />
     <h3 className="text-white text-sm font-semibold text-center">{person.name}</h3>
     <div className="flex gap-2 mt-2">
-      <button onClick={() => onClick(person)} className="text-xs px-2 py-1 bg-blue-500 rounded-lg">हेर्नुहोस्</button>
+      {familyButtonIds.includes(person.id) ? (
+        <button onClick={() => onClick(person)} className="text-xs px-2 py-1 bg-blue-500 rounded-lg">परिवार</button>
+      ) : (
+        <button onClick={() => onClick(person)} className="text-xs px-2 py-1 bg-blue-500 rounded-lg">हेर्नुहोस्</button>
+      )}
       <button onClick={() => onDetails(person)} className="text-xs px-2 py-1 bg-gray-700 rounded-lg">विवरण</button>
     </div>
   </motion.div>
@@ -81,7 +88,11 @@ const GrandparentCard = ({ person, onClick, onDetails }) => (
     <h3 className="text-white text-2xl font-bold text-center">{person.name}</h3>
     <p className="text-amber-300 text-sm">{person.details}</p>
     <div className="flex gap-3 mt-3">
-      <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">हेर्नुहोस्</button>
+      {familyButtonIds.includes(person.id) ? (
+        <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">परिवार</button>
+      ) : (
+        <button onClick={() => onClick(person)} className="px-4 py-2 bg-blue-500 rounded-xl text-sm font-medium hover:bg-blue-600 transition">हेर्नुहोस्</button>
+      )}
       <button onClick={() => onDetails(person)} className="px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition">विवरण</button>
     </div>
   </motion.div>
@@ -130,7 +141,7 @@ export default function FamilyTree() {
             <GrandparentCard 
               person={data.grandparents[0]} 
               onClick={handleExplore} 
-              onDetails={setDetail} 
+              onDetails={setDetail}
             />
           </div>
         ) : (
@@ -139,7 +150,11 @@ export default function FamilyTree() {
             <AnimatePresence>
               {(current ? current.children.concat(current.spouse ? [current.spouse] : []) : data.grandparents).map((person) => (
                 <motion.div key={person.id} initial={{ x: 300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }}>
-                  <Card person={person} onClick={handleExplore} onDetails={setDetail} />
+                  <Card 
+                    person={person} 
+                    onClick={handleExplore} 
+                    onDetails={setDetail}
+                  />
                 </motion.div>
               ))}
             </AnimatePresence>
