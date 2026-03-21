@@ -59,3 +59,11 @@
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #a855f7, #ec4899);
 }
+@keyframes glow {
+  0% { box-shadow: 0 0 10px rgba(0,150,255,0.7); }
+  50% { box-shadow: 0 0 25px rgba(0,150,255,1); }
+  100% { box-shadow: 0 0 10px rgba(0,150,255,0.7); }
+}
+.glow {
+  animation: glow 2s infinite alternate;
+}
